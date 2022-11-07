@@ -1,0 +1,42 @@
+.messenger-input {
+  display: flex;
+  position: relative;
+
+  &-error {
+    background-color: #ebcaca !important;
+  }
+
+  &-placeholder {
+    &-in,
+    &-top {
+      position: absolute;
+      transition: background-color .1s ease, top .1s ease, left .1s ease, font-size .1s ease, line-height .1s ease;
+    }
+
+    &-in {
+      top: 5px;
+      left: 15px;
+      font-size: 20px;
+      line-height: 20px;
+      color: #979797;
+    }
+
+    &-top {
+      top: -15px;
+      left: 0;
+      font-size: 12px;
+      line-height: 12px;
+      color: #000;
+    }
+  }
+
+  &-block {
+    flex-grow: 1;
+    border: none;
+    background-color: #f1f1f1;
+    font-size: 20px;
+    outline: none;
+    border-radius: 6px;
+    padding: 5px 15px;
+  }
+}
