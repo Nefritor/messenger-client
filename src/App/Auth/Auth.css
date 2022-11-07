@@ -1,0 +1,34 @@
+.messenger-auth {
+  align-self: center;
+}
+.messenger-auth-header {
+  text-align: center;
+  font-size: 50px;
+  letter-spacing: 10pt;
+  text-transform: uppercase;
+  color: #fff;
+  text-shadow: 0 0 5px #00000059;
+  padding: 100px 0;
+}
+.messenger-auth-body {
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin: 0 auto;
+}
+.messenger-auth-message-error,
+.messenger-auth-message-info {
+  width: 400px;
+  margin: 20px auto;
+  padding: 10px 20px;
+  box-sizing: border-box;
+  border-radius: 11px;
+}
+.messenger-auth-message-error {
+  background-color: #c55a5a;
+}
+.messenger-auth-message-info {
+  background-color: #868686;
+}
+/*# sourceMappingURL=Auth.css.map */
