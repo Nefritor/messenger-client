@@ -59,6 +59,7 @@ export default function Auth(props) {
             <div className='messenger-auth-header'>Вход</div>
             <div className='messenger-auth-body'>
                 <AuthForm type='signin'
+                          endpoint={props.endpoint}
                           onSuccess={onSuccess}
                           onError={onError}
                           onResetType={() => setAuthState('null')}/>
@@ -71,6 +72,7 @@ export default function Auth(props) {
             <div className='messenger-auth-header'>Регистрация</div>
             <div className='messenger-auth-body'>
                 <AuthForm type='signup'
+                          endpoint={props.endpoint}
                           onSuccess={onSuccess}
                           onError={onError}
                           onResetType={() => setAuthState('null')}/>

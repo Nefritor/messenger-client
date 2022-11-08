@@ -1,8 +1,8 @@
 import {useEffect, useState} from 'react';
 import axios from 'axios';
 
-const getUserData = (uuid) => {
-    return axios.post('http://api.nefritor.ru/get-userdata', {uuid}).then(({data}) => {
+const getUserData = (uuid, endpoint) => {
+    return axios.post(`http://${endpoint}/get-userdata`, {uuid}).then(({data}) => {
         switch (data.type) {
             case 'success':
                 return data.userData;
@@ -27,7 +27,7 @@ export default function MessageBlock(props) {
 
     useEffect(() => {
         if (props.sender !== 'me') {
-            getUserData(props.uuid).then((userData) => {
+            getUserData(props.uuid, props.endpoint).then((userData) => {
                 if (userData.username) {
                     setUsername(userData.username);
                 } else {
@@ -35,16 +35,16 @@ export default function MessageBlock(props) {
                 }
             });
         }
-    }, [props.uuid, props.username]);
+    }, [props.uuid, props.username, props.endpoint]);
 
     return (
-        <div className={`messenger-main-list-block messenger-main-list-block-${props.sender}`}>
+        <div className={`messenger-main-list-messageBlock messenger-main-list-messageBlock-${props.sender}`}>
             {
                 username &&
-                <div className='messenger-main-list-block-username'>{username}</div>
+                <div className='messenger-main-list-messageBlock-username'>{username}</div>
             }
-            <div className='messenger-main-list-block-text'>{props.text}</div>
-            <div className='messenger-main-list-block-date'>{formatDate(props.date)}</div>
+            <div className='messenger-main-list-messageBlock-text'>{props.text}</div>
+            <div className='messenger-main-list-messageBlock-date'>{formatDate(props.date)}</div>
         </div>
     );
 }
