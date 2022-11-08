@@ -3,6 +3,7 @@ import './Input.css';
 
 Input.defaultProps = {
     className: '',
+    inputClassName: '',
     type: 'text',
     placeholder: '',
     onChange: () => undefined,
@@ -37,7 +38,7 @@ export default function Input(props) {
     }
 
     return (
-        <form className='messenger-input'
+        <form className={`messenger-input ${props.className}`}
               onSubmit={(e) => onSubmit(e)}
               onClick={() => inputRef.current.focus()}>
             {
@@ -47,7 +48,7 @@ export default function Input(props) {
                 </div>
             }
             <input ref={inputRef}
-                   className={getButtonClassName(!!props.errorText, props.className)}
+                   className={getButtonClassName(!!props.errorText, props.inputClassName)}
                    type={props.type}
                    value={props.value}
                    onChange={(e) => props.onChange(e.target.value)}/>

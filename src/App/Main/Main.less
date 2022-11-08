@@ -3,11 +3,13 @@
   flex-direction: column;
   flex-grow: 1;
   overflow: hidden;
+  position: relative;
 
   &-user {
     display: flex;
     justify-content: space-between;
     padding: 10px 15px;
+    box-shadow: 0 0 10px #0000004a;
 
     &-info {
       font-size: 18px;
@@ -27,12 +29,15 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    padding: 10px 15px;
+    padding: 10px 15px 60px 15px;
     gap: 7px;
     overflow-y: scroll;
-    margin-right: -17px;
 
-    &-block {
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    &-messageBlock {
       position: relative;
       display: inline-flex;
       background-color: #dedede;
@@ -52,13 +57,13 @@
         font-size: 14px;
         margin-right: 5px;
         font-weight: bold;
-        max-width: fit-content;
+        max-width: min-content;
         line-height: 14px;
         text-align: right;
+        flex-shrink: 0;
       }
 
       &-text {
-        min-width: 100px;
         max-width: 400px;
       }
 
@@ -69,16 +74,51 @@
         right: 5px;
       }
     }
+
+    &-eventBlock {
+      display: flex;
+      justify-content: center;
+      position: relative;
+      align-items: center;
+
+      &-text {
+        font-size: 12px;
+      }
+
+      &-divider {
+        margin: 0 5px;
+        height: 12px;
+        border-left: 1px solid #787878;
+      }
+
+      &-date {
+        font-size: 12px;
+        color: #565656;
+      }
+    }
   }
 
   &-input {
+    display: flex;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+
+    &-wrapper {
+      flex-grow: 1;
+    }
+
     &-block {
-      border-radius: 0;
       line-height: 35px;
+      margin: 10px 0 10px 10px;
+      box-shadow: 0 0 10px #0000004a;
+      border-radius: 23px;
     }
 
     &-button {
-      border-radius: 0 0 6px 6px;
+      margin: 10px;
+      box-shadow: 0 0 10px #0000004a;
+      border-radius: 23px;
     }
   }
 }

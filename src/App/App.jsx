@@ -6,12 +6,17 @@ import axios from 'axios';
 
 import './App.css';
 
+App.defaultProps = {
+    endpoint: 'api.nefritor.ru'
+}
+
 export default function App(props) {
+    const [errorText, setErrorText] = useState('');
     const [userData, setUserData] = useState({});
     const [cookie, setCookie] = useCookies(['sid'])
 
     const updateUserData = (sid) => {
-        return axios.post('http://api.nefritor.ru/get-session', {sid}).then(({data}) => {
+        return axios.post(`http://${props.endpoint}/get-session`, {sid}).then(({data}) => {
             switch (data.type) {
                 case 'success':
                     const userData = data.userData;
@@ -30,9 +35,19 @@ export default function App(props) {
         updateUserData(sid);
     }
 
-    const onExit = () => {
+    const showError = (reason) => {
+        setErrorText(reason);
+        setTimeout(() => {
+            setErrorText('');
+        }, 10000);
+    }
+
+    const onExit = (reason) => {
         setCookie('sid', undefined);
         setUserData({});
+        if (reason) {
+            showError(reason);
+        }
     }
 
     useEffect(() => {
@@ -46,9 +61,15 @@ export default function App(props) {
         <div className='messenger'>
             {
                 userData.uuid ?
-                    <Main userData={userData}
+                    <Main endpoint={props.endpoint}
+                          userData={userData}
                           onExit={onExit}/> :
-                    <Auth onConnect={onConnect}/>
+                    <Auth endpoint={props.endpoint}
+                          onConnect={onConnect}/>
+            }
+            {
+                errorText &&
+                <div className='messenger-auth-message-error'>{errorText}</div>
             }
         </div>
     )

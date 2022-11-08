@@ -1,55 +1,91 @@
 import {useEffect, useRef, useState} from 'react';
 import Input from '../../Components/Input/Input';
 import Button from '../../Components/Button/Button';
-import MessageBlock from './MessageBlock/MessageBlock';
+import MessageBlock from './Block/MessageBlock';
+import EventBlock from './Block/EventBlock';
 
 import './Main.css';
 
-const startWebSocket = ({onMessage, onClose}) => {
-    const ws = new WebSocket('ws://api.nefritor.ru/');
-    ws.onopen = () => {
-        console.log('WebSocket opened on client');
+const startWebSocket = (wsRef, endpoint, {onMessage, onClose}) => {
+    wsRef.current.webSocket = new WebSocket(`ws://${endpoint}/`);
+    wsRef.current.webSocket.onopen = () => {
+        wsRef.current.errorCount = 0;
     }
-    ws.onmessage = (msg) => {
-        console.log(`WebSocket message: ${msg.data}`);
+    wsRef.current.webSocket.onmessage = (msg) => {
         onMessage(msg);
     }
-    ws.onclose = () => {
-        onClose();
-        ws.close();
+    wsRef.current.webSocket.onerror = () => {
+        wsRef.current.errorCount++;
     }
-    return ws;
+    wsRef.current.webSocket.onclose = (event) => {
+        switch (event.code) {
+            case 3000:
+                onClose(event.reason);
+                break;
+            default:
+                if (wsRef.current.errorCount >= 3) {
+                    onClose('Сервер не отвечает');
+                } else {
+                    setTimeout(() => {
+                        startWebSocket(wsRef, endpoint, {onMessage, onClose});
+                    }, 3000);
+                }
+                break;
+        }
+    }
 }
 
 export default function Main(props) {
     const [messageList, setMessageList] = useState([]);
     const [messageInput, setMessageInput] = useState('');
-    const webSocket = useRef();
+    const wsRef = useRef({
+        webSocket: undefined,
+        errorCount: 0
+    });
 
     const listEndRef = useRef();
 
     useEffect(() => {
-        webSocket.current = startWebSocket({
-            onMessage: ({data}) => {
-                setMessageList(prev => [...prev, ...JSON.parse(data)]);
-            },
-            onClose: () => {
-                props.onExit();
-            }
-        });
+        startWebSocket(
+            wsRef,
+            props.endpoint,
+            {
+                onMessage: ({data}) => {
+                    const message = JSON.parse(data);
+                    switch (message.type) {
+                        case 'connection':
+                            setMessageList(message.messages);
+                            break;
+                        case 'message':
+                            setMessageList(prev => [...prev, ...message.data]);
+                            break;
+                    }
+                },
+                onClose: (reason) => {
+                    props.onExit(reason);
+                }
+            });
+        return () => {
+            onExit();
+        }
     }, []);
 
     useEffect(() => {
-        listEndRef.current.scrollIntoView({ behavior: "smooth" });
+        listEndRef.current.scrollIntoView({behavior: "smooth"});
     }, [messageList])
 
     const onRefInit = (inputRef) => {
         inputRef.current.focus();
     }
 
+    const onExit = () => {
+        wsRef.current.webSocket.close(3000);
+        props.onExit();
+    }
+
     const sendMessage = () => {
         if (messageInput) {
-            webSocket.current.send(
+            wsRef.current.webSocket.send(
                 JSON.stringify({
                     type: 'message',
                     data: {
@@ -63,7 +99,7 @@ export default function Main(props) {
         }
     }
 
-    const getMessageBlockProps = (messageProps) => {
+    const getBlockProps = (messageProps) => {
         if (messageProps.uuid === props.userData.uuid) {
             return {
                 ...messageProps,
@@ -85,18 +121,21 @@ export default function Main(props) {
                 </span>
                 <Button className='messenger-main-user-exit'
                         caption='Выйти'
-                        onClick={props.onExit}/>
+                        onClick={onExit}/>
             </div>
             <div className='messenger-main-list'>
                 {
                     messageList.map((message, index) => (
-                        <MessageBlock key={index} {...getMessageBlockProps(message)}/>
+                        message.text ?
+                            <MessageBlock key={index} endpoint={props.endpoint} {...getBlockProps(message)}/> :
+                            <EventBlock key={index} endpoint={props.endpoint} {...getBlockProps(message)}/>
                     ))
                 }
-                <div ref={listEndRef} />
+                <div ref={listEndRef}/>
             </div>
             <div className='messenger-main-input'>
-                <Input className='messenger-main-input-block'
+                <Input className='messenger-main-input-wrapper'
+                       inputClassName='messenger-main-input-block'
                        value={messageInput}
                        onRefInit={onRefInit}
                        onChange={setMessageInput}

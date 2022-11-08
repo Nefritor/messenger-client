@@ -16,7 +16,7 @@ export default function AuthForm(props) {
     const [isValidPassword, setIsValidPassword] = useState(true);
 
     const processAuth = (type) => {
-        axios.post(`http://api.nefritor.ru/${type}`, {username, password})
+        axios.post(`http://${props.endpoint}/${type}`, {username, password})
             .then(({data}) => {
                 switch (data.type) {
                     case 'success':
@@ -87,17 +87,26 @@ export default function AuthForm(props) {
         }
     }
 
+    const onRefInit = (inputRef) => {
+        inputRef.current.focus();
+    }
+
     return (
         <>
-            <Input value={username}
-                   placeholder='Имя пользователя'
-                   errorText={!isValidUsername && 'Введите имя пользователя'}
-                   onChange={setUsername}/>
-            <Input value={password}
-                   placeholder='Пароль'
-                   type='password'
-                   errorText={!isValidPassword && 'Введите пароль'}
-                   onChange={setPassword}/>
+            <div className='messenger-auth-body-form'>
+                <Input value={username}
+                       placeholder='Имя пользователя'
+                       errorText={!isValidUsername && 'Введите имя пользователя'}
+                       onRefInit={onRefInit}
+                       onChange={setUsername}
+                       onSubmit={buttonClick}/>
+                <Input value={password}
+                       placeholder='Пароль'
+                       type='password'
+                       errorText={!isValidPassword && 'Введите пароль'}
+                       onChange={setPassword}
+                       onSubmit={buttonClick}/>
+            </div>
             <Button caption={getButtonCaption()}
                     onClick={buttonClick}/>
             <Button caption='Назад'
