@@ -6,7 +6,7 @@ import MessageBlock from './MessageBlock/MessageBlock';
 import './Main.css';
 
 const startWebSocket = ({onMessage, onClose}) => {
-    const ws = new WebSocket('ws://localhost:3001/');
+    const ws = new WebSocket('ws://api.nefritor.ru/');
     ws.onopen = () => {
         console.log('WebSocket opened on client');
     }

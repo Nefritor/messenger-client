@@ -2,7 +2,7 @@ import {useEffect, useState} from 'react';
 import axios from 'axios';
 
 const getUserData = (uuid) => {
-    return axios.post('http://localhost:3001/get-userdata', {uuid}).then(({data}) => {
+    return axios.post('http://api.nefritor.ru/get-userdata', {uuid}).then(({data}) => {
         switch (data.type) {
             case 'success':
                 return data.userData;

@@ -16,7 +16,7 @@ export default function AuthForm(props) {
     const [isValidPassword, setIsValidPassword] = useState(true);
 
     const processAuth = (type) => {
-        axios.post(`http://localhost:3001/${type}`, {username, password})
+        axios.post(`http://api.nefritor.ru/${type}`, {username, password})
             .then(({data}) => {
                 switch (data.type) {
                     case 'success':
