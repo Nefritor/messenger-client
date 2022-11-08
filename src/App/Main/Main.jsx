@@ -1,4 +1,5 @@
 import {useEffect, useRef, useState} from 'react';
+import {Cookies} from 'react-cookie'
 import Input from '../../Components/Input/Input';
 import Button from '../../Components/Button/Button';
 import MessageBlock from './Block/MessageBlock';
@@ -6,8 +7,8 @@ import EventBlock from './Block/EventBlock';
 
 import './Main.css';
 
-const startWebSocket = (wsRef, endpoint, {onMessage, onClose}) => {
-    wsRef.current.webSocket = new WebSocket(`ws://${endpoint}/`);
+const startWebSocket = ({wsRef, endpoint, onMessage, onClose}) => {
+    wsRef.current.webSocket = new WebSocket(`ws://${endpoint}/${new Cookies().get('sid')}`);
     wsRef.current.webSocket.onopen = () => {
         wsRef.current.errorCount = 0;
     }
@@ -27,7 +28,7 @@ const startWebSocket = (wsRef, endpoint, {onMessage, onClose}) => {
                     onClose('Сервер не отвечает');
                 } else {
                     setTimeout(() => {
-                        startWebSocket(wsRef, endpoint, {onMessage, onClose});
+                        startWebSocket({wsRef, endpoint, onMessage, onClose});
                     }, 3000);
                 }
                 break;
@@ -46,28 +47,24 @@ export default function Main(props) {
     const listEndRef = useRef();
 
     useEffect(() => {
-        startWebSocket(
+        startWebSocket({
             wsRef,
-            props.endpoint,
-            {
-                onMessage: ({data}) => {
-                    const message = JSON.parse(data);
-                    switch (message.type) {
-                        case 'connection':
-                            setMessageList(message.messages);
-                            break;
-                        case 'message':
-                            setMessageList(prev => [...prev, ...message.data]);
-                            break;
-                    }
-                },
-                onClose: (reason) => {
-                    props.onExit(reason);
+            endpoint: props.endpoint,
+            onMessage: ({data}) => {
+                const message = JSON.parse(data);
+                switch (message.type) {
+                    case 'connection':
+                        setMessageList(message.messages);
+                        break;
+                    case 'message':
+                        setMessageList(prev => [...prev, ...message.data]);
+                        break;
                 }
-            });
-        return () => {
-            onExit();
-        }
+            },
+            onClose: (reason) => {
+                props.onExit(reason);
+            }
+        });
     }, []);
 
     useEffect(() => {
