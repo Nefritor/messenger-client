@@ -11,7 +11,7 @@ export default function App(props) {
     const [cookie, setCookie] = useCookies(['sid'])
 
     const updateUserData = (sid) => {
-        return axios.post('http://localhost:3001/get-session', {sid}).then(({data}) => {
+        return axios.post('http://api.nefritor.ru/get-session', {sid}).then(({data}) => {
             switch (data.type) {
                 case 'success':
                     const userData = data.userData;
