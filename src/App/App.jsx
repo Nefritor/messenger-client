@@ -13,10 +13,10 @@ App.defaultProps = {
 export default function App(props) {
     const [errorText, setErrorText] = useState('');
     const [userData, setUserData] = useState({});
-    const [cookie, setCookie] = useCookies(['sid'])
+    const [cookie, setCookie] = useCookies(['uuid'])
 
-    const updateUserData = (sid) => {
-        return axios.post(`http://${props.endpoint}/get-session`, {sid}).then(({data}) => {
+    const updateUserData = (uuid) => {
+        return axios.post(`http://${props.endpoint}/get-userdata`, {uuid}).then(({data}) => {
             switch (data.type) {
                 case 'success':
                     const userData = data.userData;
@@ -30,9 +30,9 @@ export default function App(props) {
         })
     }
 
-    const onConnect = ({sid}) => {
-        setCookie('sid', sid);
-        updateUserData(sid);
+    const onConnect = ({uuid}) => {
+        setCookie('uuid', uuid);
+        updateUserData(uuid);
     }
 
     const showError = (reason) => {
@@ -43,7 +43,7 @@ export default function App(props) {
     }
 
     const onExit = (reason) => {
-        setCookie('sid', undefined);
+        setCookie('uuid', undefined);
         setUserData({});
         if (reason) {
             showError(reason);
@@ -51,9 +51,9 @@ export default function App(props) {
     }
 
     useEffect(() => {
-        const sid = cookie.sid;
-        if (sid) {
-            updateUserData(sid);
+        const uuid = cookie.uuid;
+        if (uuid) {
+            updateUserData(uuid);
         }
     }, [])
 
@@ -64,12 +64,14 @@ export default function App(props) {
                     <Main endpoint={props.endpoint}
                           userData={userData}
                           onExit={onExit}/> :
-                    <Auth endpoint={props.endpoint}
-                          onConnect={onConnect}/>
-            }
-            {
-                errorText &&
-                <div className='messenger-auth-message-error'>{errorText}</div>
+                    <>
+                        <Auth endpoint={props.endpoint}
+                              onConnect={onConnect}/>
+                        {
+                            errorText &&
+                            <div className='messenger-auth-message-error'>{errorText}</div>
+                        }
+                    </>
             }
         </div>
     )

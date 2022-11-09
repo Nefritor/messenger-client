@@ -1,5 +1,6 @@
 import {useEffect, useState} from 'react';
 import axios from 'axios';
+import {formatDateTime} from '../../../Utils/Date';
 
 const getUserData = (uuid, endpoint) => {
     return axios.post(`http://${endpoint}/get-userdata`, {uuid}).then(({data}) => {
@@ -10,16 +11,6 @@ const getUserData = (uuid, endpoint) => {
                 return {};
         }
     });
-}
-
-const formatDate = (time) => {
-    const date = new Date(time);
-    const now = new Date();
-    now.setHours(0, 0, 0,0);
-    if (time < now) {
-        return `${date.toLocaleDateString()} - ${date.toLocaleTimeString()}`;
-    }
-    return date.toLocaleTimeString();
 }
 
 export default function MessageBlock(props) {
@@ -44,7 +35,7 @@ export default function MessageBlock(props) {
                 <div className='messenger-main-list-messageBlock-username'>{username}</div>
             }
             <div className='messenger-main-list-messageBlock-text'>{props.text}</div>
-            <div className='messenger-main-list-messageBlock-date'>{formatDate(props.date)}</div>
+            <div className='messenger-main-list-messageBlock-date'>{formatDateTime(props.date)}</div>
         </div>
     );
 }
