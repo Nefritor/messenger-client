@@ -8,7 +8,7 @@ import EventBlock from './Block/EventBlock';
 import './Main.css';
 
 const startWebSocket = ({wsRef, endpoint, onMessage, onClose}) => {
-    wsRef.current.webSocket = new WebSocket(`ws://${endpoint}/${new Cookies().get('sid')}`);
+    wsRef.current.webSocket = new WebSocket(`ws://${endpoint}/${new Cookies().get('uuid')}`);
     wsRef.current.webSocket.onopen = () => {
         wsRef.current.errorCount = 0;
     }
@@ -21,6 +21,8 @@ const startWebSocket = ({wsRef, endpoint, onMessage, onClose}) => {
     wsRef.current.webSocket.onclose = (event) => {
         switch (event.code) {
             case 3000:
+            case 3001:
+            case 3002:
                 onClose(event.reason);
                 break;
             default:
