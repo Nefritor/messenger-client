@@ -181,7 +181,7 @@ export default function Auth({onConnect}) {
     return (
         <div className='messenger-auth'>
             <div className='messenger-auth-header'>{getHeaderCaption(authState)}</div>
-            <SwitchContent value={authState} height={86} configs={getContentConfig()}/>
+            <SwitchContent value={authState} height={95} configs={getContentConfig()}/>
             <div className='messenger-auth-body'>
                 {getButtons(authState)}
             </div>
