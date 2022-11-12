@@ -1,49 +1,27 @@
-import {useEffect, useState} from 'react';
-import axios from 'axios';
 import {formatDateTime} from '../../../Utils/Date';
 
-const getUserData = (uuid, endpoint) => {
-    return axios.post(`http://${endpoint}/get-userdata`, {uuid}).then(({data}) => {
-        switch (data.type) {
-            case 'success':
-                return data.userData;
-            default:
-                return {};
-        }
-    });
-}
-
-export default function EventBlock(props) {
-    const [username, setUsername] = useState('');
-
-    useEffect(() => {
-        if (props.username) {
-            setUsername(props.username);
-        } else {
-            getUserData(props.uuid, props.endpoint).then((userData) => {
-                if (userData.username) {
-                    setUsername(userData.username);
-                } else {
-                    setUsername('[Пользователь удалён]');
-                }
-            });
-        }
-    }, [props.uuid, props.endpoint]);
-
+export default function EventBlock({username, date, event, type}) {
     const getEventCaption = () => {
-        switch (props.event) {
-            case 'connection':
-                return `${username} вошёл в чат`;
-            case 'disconnection':
-                return `${username} вышел из чата`;
-        }
+        const metaText = (() => {
+            switch (event) {
+                case 'connection':
+                    return 'вошел в чат';
+                case 'disconnection':
+                    return 'вышел из чата';
+            }
+        })();
+        return <>
+            <span className={type === '1' ? ' messenger-main-user-master' : ''}>{username}</span>
+            &nbsp;
+            <span>{metaText}</span>
+        </>
     }
 
     return (
         <div className='messenger-main-list-eventBlock'>
             <div className='messenger-main-list-eventBlock-text'>{getEventCaption()}</div>
             <div className='messenger-main-list-eventBlock-divider'/>
-            <div className='messenger-main-list-eventBlock-date'>{formatDateTime(props.date)}</div>
+            <div className='messenger-main-list-eventBlock-date'>{formatDateTime(date)}</div>
         </div>
     );
 }

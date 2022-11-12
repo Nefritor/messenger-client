@@ -8,17 +8,12 @@ Auth.defaultProps = {
     onConnect: () => console.error('Auth component doesn\'t has "onConnect" callback')
 }
 
-export default function Auth(props) {
+export default function Auth({onConnect}) {
     const [authState, setAuthState] = useState('null');
     const [messageConfig, setMessageConfig] = useState({});
 
-
     const onError = (data) => {
         notifyMessage(data.type, data.message);
-    };
-
-    const onSuccess = (data) => {
-        props.onConnect(data)
     };
 
     const notifyMessage = (type, text) => {
@@ -29,18 +24,31 @@ export default function Auth(props) {
         setTimeout(() => {
             setMessageConfig({});
         }, 3000);
-    }
+    };
 
-    const getStateRender = (state) => {
-        switch (state) {
-            case 'signup':
-                return getSignUpRender();
-            case 'signin':
-                return getSignInRender();
-            default:
-                return getAuthRender();
-        }
-    }
+    const getSignInRender = () => (
+        <>
+            <div className='messenger-auth-header'>Вход</div>
+            <div className='messenger-auth-body'>
+                <AuthForm type='signin'
+                          onSuccess={onConnect}
+                          onError={onError}
+                          onResetType={() => setAuthState('null')}/>
+            </div>
+        </>
+    );
+
+    const getSignUpRender = () => (
+        <>
+            <div className='messenger-auth-header'>Регистрация</div>
+            <div className='messenger-auth-body'>
+                <AuthForm type='signup'
+                          onSuccess={onConnect}
+                          onError={onError}
+                          onResetType={() => setAuthState('null')}/>
+            </div>
+        </>
+    );
 
     const getAuthRender = () => (
         <>
@@ -52,33 +60,18 @@ export default function Auth(props) {
                         onClick={() => setAuthState('signup')}/>
             </div>
         </>
-    )
+    );
 
-    const getSignInRender = () => (
-        <>
-            <div className='messenger-auth-header'>Вход</div>
-            <div className='messenger-auth-body'>
-                <AuthForm type='signin'
-                          endpoint={props.endpoint}
-                          onSuccess={onSuccess}
-                          onError={onError}
-                          onResetType={() => setAuthState('null')}/>
-            </div>
-        </>
-    )
-
-    const getSignUpRender = () => (
-        <>
-            <div className='messenger-auth-header'>Регистрация</div>
-            <div className='messenger-auth-body'>
-                <AuthForm type='signup'
-                          endpoint={props.endpoint}
-                          onSuccess={onSuccess}
-                          onError={onError}
-                          onResetType={() => setAuthState('null')}/>
-            </div>
-        </>
-    )
+    const getStateRender = (state) => {
+        switch (state) {
+            case 'signup':
+                return getSignUpRender();
+            case 'signin':
+                return getSignInRender();
+            default:
+                return getAuthRender();
+        }
+    };
 
     return (
         <div className='messenger-auth'>

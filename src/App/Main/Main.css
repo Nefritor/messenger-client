@@ -10,6 +10,7 @@
   justify-content: space-between;
   padding: 10px 15px;
   box-shadow: 0 0 10px #0000004a;
+  z-index: 1;
 }
 .messenger-main-user-info {
   font-size: 18px;
@@ -20,6 +21,13 @@
 .messenger-main-user-exit {
   font-size: 15px;
   line-height: 30px;
+}
+.messenger-main-user-master {
+  background-image: linear-gradient(to right, #e91e63 0%, #9c27b0 17%, #673ab7 33%, #3f51b5 50%, #673ab7 67%, #9c27b0 83%, #e91e63 100%);
+  background-size: 500% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: text-animation 30s linear infinite;
 }
 .messenger-main-list {
   height: 100%;
@@ -102,5 +110,10 @@
   margin: 10px;
   box-shadow: 0 0 10px #0000004a;
   border-radius: 23px;
+}
+@keyframes text-animation {
+  to {
+    background-position: 500% center;
+  }
 }
 /*# sourceMappingURL=Main.css.map */

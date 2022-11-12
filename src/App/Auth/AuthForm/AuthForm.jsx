@@ -1,7 +1,9 @@
+import {useState} from 'react';
+import {Cookies} from 'react-cookie';
 import Input from '../../../Components/Input/Input';
 import Button from '../../../Components/Button/Button';
-import {useState} from 'react';
-import axios from 'axios';
+import {useEndpoint} from '../../../Context/Endpoint';
+import {processAuth} from '../../../Utils/Auth';
 
 AuthForm.defaultProps = {
     onSuccess: () => console.error('AuthForm component doesn\'t has "onSuccess" callback'),
@@ -9,39 +11,49 @@ AuthForm.defaultProps = {
     onResetType: () => console.error('AuthForm component doesn\'t has "onResetType" callback')
 }
 
-export default function AuthForm(props) {
+const getAuthData = (type, data) => {
+    switch (type) {
+        case 'signup':
+            return {
+                ...data,
+                type: new Cookies().get('usertype') || 0
+            }
+        default:
+            return data;
+    }
+}
+
+const getButtonCaption = (type) => {
+    switch (type) {
+        case 'signin':
+            return 'Войти';
+        case 'signup':
+            return 'Зарегистрироваться';
+    }
+}
+
+const getErrorByType = (type) => {
+    const message = (() => {
+        switch (type) {
+            case 1:
+                return 'Укажите имя пользователя';
+            case 2:
+                return 'Укажите пароль';
+            case 3:
+                return 'Укажите имя пользователя и пароль';
+            default:
+                return 'Неизвестная ошибка';
+        }
+    })();
+    return {type: 'error', message};
+}
+
+export default function AuthForm({type, onSuccess, onError, onResetType}) {
+    const endpoint = useEndpoint();
     const [username, setUsername] = useState('');
     const [isValidUsername, setIsValidUsername] = useState(true);
     const [password, setPassword] = useState('');
     const [isValidPassword, setIsValidPassword] = useState(true);
-
-    const processAuth = (type) => {
-        axios.post(`http://${props.endpoint}/${type}`, {username, password})
-            .then(({data}) => {
-                switch (data.type) {
-                    case 'success':
-                        return props.onSuccess(data);
-                    case 'error':
-                        return props.onError(data);
-                }
-            })
-    }
-
-    const getErrorByType = (type) => {
-        const message = (() => {
-            switch (type) {
-                case 1:
-                    return 'Укажите имя пользователя';
-                case 2:
-                    return 'Укажите пароль';
-                case 3:
-                    return 'Укажите имя пользователя и пароль';
-                default:
-                    return 'Неизвестная ошибка';
-            }
-        })();
-        return {type: 'error', message};
-    }
 
     const validate = () => {
         let errorType = 0;
@@ -50,7 +62,7 @@ export default function AuthForm(props) {
             setTimeout(() => {
                 setIsValidUsername(true);
             }, 3000);
-            props.onError({type: 'error', message: 'Укажите имя пользователя'});
+            onError({type: 'error', message: 'Укажите имя пользователя'});
             errorType += 1;
         } else if (!isValidUsername) {
             setIsValidUsername(true);
@@ -60,30 +72,27 @@ export default function AuthForm(props) {
             setTimeout(() => {
                 setIsValidPassword(true);
             }, 3000);
-            props.onError({type: 'error', message: 'Укажите пароль'});
+            onError({type: 'error', message: 'Укажите пароль'});
             errorType += 2;
         } else if (!isValidPassword) {
             setIsValidPassword(true);
         }
         if (!!errorType) {
-            props.onError(getErrorByType(errorType));
+            onError(getErrorByType(errorType));
             return false;
         }
         return true;
-    }
-
-    const getButtonCaption = () => {
-        switch (props.type) {
-            case 'signin':
-                return 'Войти';
-            case 'signup':
-                return 'Зарегистрироваться';
-        }
-    }
+    };
 
     const buttonClick = () => {
         if (validate()) {
-            processAuth(props.type);
+            processAuth({
+                endpoint,
+                type,
+                data: getAuthData(type, {username, password}),
+                onSuccess,
+                onError
+            });
         }
     }
 
@@ -107,10 +116,10 @@ export default function AuthForm(props) {
                        onChange={setPassword}
                        onSubmit={buttonClick}/>
             </div>
-            <Button caption={getButtonCaption()}
+            <Button caption={getButtonCaption(type)}
                     onClick={buttonClick}/>
             <Button caption='Назад'
-                    onClick={props.onResetType}/>
+                    onClick={onResetType}/>
         </>
     )
 }

@@ -2,37 +2,33 @@ import {useEffect, useState} from 'react';
 import {useCookies} from 'react-cookie'
 import Auth from './Auth/Auth';
 import Main from './Main/Main';
-import axios from 'axios';
+import {useEndpoint} from '../Context/Endpoint';
+import {useUserData, useUserDataDispatch} from '../Context/User';
+import {updateUserData} from '../Utils/UserData';
 
 import './App.css';
 
-App.defaultProps = {
-    endpoint: 'api.nefritor.ru'
-}
-
-export default function App(props) {
+export default function App() {
+    const endpoint = useEndpoint();
+    const userData = useUserData();
+    const userDataDispatch = useUserDataDispatch();
     const [errorText, setErrorText] = useState('');
-    const [userData, setUserData] = useState({});
-    const [cookie, setCookie] = useCookies(['uuid'])
+    const [cookie, setCookie] = useCookies(['uuid']);
 
-    const updateUserData = (uuid) => {
-        return axios.post(`http://${props.endpoint}/get-userdata`, {uuid}).then(({data}) => {
-            switch (data.type) {
-                case 'success':
-                    const userData = data.userData;
-                    return setUserData({
-                        uuid: userData.uuid,
-                        username: userData.username
-                    });
-                default:
-                    return false;
-            }
-        })
+    const onSuccessLogin = (data) => {
+        userDataDispatch({
+            type: 'setData',
+            data: data.userData
+        });
     }
 
     const onConnect = ({uuid}) => {
         setCookie('uuid', uuid);
-        updateUserData(uuid);
+        updateUserData({
+            endpoint,
+            uuid,
+            onSuccess: onSuccessLogin
+        });
     }
 
     const showError = (reason) => {
@@ -44,7 +40,7 @@ export default function App(props) {
 
     const onExit = (reason) => {
         setCookie('uuid', undefined);
-        setUserData({});
+        userDataDispatch({type: 'removeData'});
         if (reason) {
             showError(reason);
         }
@@ -53,7 +49,11 @@ export default function App(props) {
     useEffect(() => {
         const uuid = cookie.uuid;
         if (uuid) {
-            updateUserData(uuid);
+            updateUserData({
+                endpoint,
+                uuid,
+                onSuccess: onSuccessLogin
+            });
         }
     }, [])
 
@@ -61,12 +61,9 @@ export default function App(props) {
         <div className='messenger'>
             {
                 userData.uuid ?
-                    <Main endpoint={props.endpoint}
-                          userData={userData}
-                          onExit={onExit}/> :
+                    <Main onExit={onExit}/> :
                     <>
-                        <Auth endpoint={props.endpoint}
-                              onConnect={onConnect}/>
+                        <Auth onConnect={onConnect}/>
                         {
                             errorText &&
                             <div className='messenger-auth-message-error'>{errorText}</div>

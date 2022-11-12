@@ -23,35 +23,47 @@ const getButtonClassName = (isError, additionalClassName) => {
     return className;
 }
 
-export default function Input(props) {
+export default function Input(
+    {
+        className,
+        inputClassName,
+        type,
+        placeholder,
+        value,
+        errorText,
+        onChange,
+        onSubmit,
+        onRefInit
+    }
+) {
     const inputRef = useRef(null);
 
+    const submit = (event) => {
+        event.preventDefault();
+        onSubmit();
+    }
+
     useEffect(() => {
-        if (props.onRefInit) {
-            props.onRefInit(inputRef);
+        if (onRefInit) {
+            onRefInit(inputRef);
         }
     }, [inputRef]);
 
-    const onSubmit = (event) => {
-        event.preventDefault();
-        props.onSubmit();
-    }
-
     return (
-        <form className={`messenger-input ${props.className}`}
-              onSubmit={(e) => onSubmit(e)}
+        <form className={`messenger-input ${className}`}
+              onSubmit={submit}
               onClick={() => inputRef.current.focus()}>
             {
-                props.placeholder &&
-                <div className={props.value ? 'messenger-input-placeholder-top' : 'messenger-input-placeholder-in'}>
-                    {props.placeholder}
+                placeholder &&
+                <div className={value ? 'messenger-input-placeholder-top' : 'messenger-input-placeholder-in'}>
+                    {placeholder}
                 </div>
             }
             <input ref={inputRef}
-                   className={getButtonClassName(!!props.errorText, props.inputClassName)}
-                   type={props.type}
-                   value={props.value}
-                   onChange={(e) => props.onChange(e.target.value)}/>
+                   className={getButtonClassName(!!errorText, inputClassName)}
+                   type={type}
+                   value={value}
+                   onChange={(e) => onChange(e.target.value)}/>
         </form>
     );
 }
