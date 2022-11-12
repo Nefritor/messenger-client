@@ -15,7 +15,7 @@ const ENDPOINTS = {
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <EndpointProvider endpoint={ENDPOINTS.LOCAL}>
+    <EndpointProvider endpoint={ENDPOINTS.REMOTE}>
         <UserProvider>
             <App/>
         </UserProvider>
