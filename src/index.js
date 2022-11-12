@@ -9,7 +9,7 @@ import App from './App/App';
 import './index.css';
 
 const ENDPOINTS = {
-    REMOTE: 'api.nefritor.ru',
+    REMOTE: 'api.n3f.ru',
     LOCAL: 'localhost:3001'
 }
 
