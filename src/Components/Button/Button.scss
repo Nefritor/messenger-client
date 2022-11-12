@@ -1,7 +1,10 @@
 .messenger-button {
-  padding: 0 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 13px;
   text-align: center;
-  background-color: #303030;
+  background-color: #555;
   font-size: 24px;
   line-height: 40px;
   border-radius: 6px;
@@ -12,9 +15,9 @@
   transition: background-color .3s ease;
 
   &:hover {
-    background-color: #3f3f3f;
+    background-color: #666;
   }
   &:active {
-    background-color: #565656;
+    background-color: #777;
   }
 }
