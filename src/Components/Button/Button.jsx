@@ -2,17 +2,17 @@ import './Button.css';
 
 Button.defaultProps = {
     caption: 'button',
-    title: 'button',
+    title: '',
     className: '',
     onClick: () => console.error('Button hasn\'t "onClick" callback')
 }
 
-export default function Button(props) {
+export default function Button({title, className, caption, onClick}) {
     return (
-        <div className={`messenger-button ${props.className}`}
-             title={props.title || props.caption}
-             onClick={() => props.onClick()}>
-            {props.caption}
+        <div className={`messenger-button ${className}`}
+             title={title || caption}
+             onClick={onClick}>
+            {caption}
         </div>
     );
 }
