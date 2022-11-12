@@ -9,6 +9,8 @@ import EventBlock from './Block/EventBlock';
 import {useEndpoint} from '../../Context/Endpoint';
 import {useUserData} from '../../Context/User';
 
+import {UilMessage} from '@iconscout/react-unicons'
+
 import './Main.css';
 
 const startWebSocket = ({wsRef, endpoint, onMessage, onClose}) => {
@@ -101,26 +103,37 @@ export default function Main({onExit}) {
         }
     }
 
-    useEffect(() => {
-        startWebSocket({
-            wsRef,
-            endpoint,
-            onMessage: ({data}) => {
-                const message = JSON.parse(data);
-                switch (message.type) {
-                    case 'connection':
-                        setMessageList(message.messages);
-                        break;
-                    case 'message':
-                        setMessageList(prev => [...prev, ...message.data]);
-                        break;
-                }
-            },
-            onClose: (reason) => {
-                onExit(reason);
+    const getSendButtonStyle = () => {
+        if (!messageInput) {
+            return {
+                marginRight: -50
             }
-        });
-    }, [endpoint, onExit]);
+        }
+        return {};
+    }
+
+    useEffect(() => {
+        if (!wsRef.current.webSocket) {
+            startWebSocket({
+                wsRef,
+                endpoint,
+                onMessage: ({data}) => {
+                    const message = JSON.parse(data);
+                    switch (message.type) {
+                        case 'connection':
+                            setMessageList(message.messages);
+                            break;
+                        case 'message':
+                            setMessageList(prev => [...prev, ...message.data]);
+                            break;
+                    }
+                },
+                onClose: (reason) => {
+                    onExit(reason);
+                }
+            });
+        }
+    }, []);
 
     useEffect(() => {
         listEndRef.current.scrollIntoView({behavior: "smooth"});
@@ -129,14 +142,14 @@ export default function Main({onExit}) {
     return (
         <div className='messenger-main'>
             <div className='messenger-main-user'>
-                <span className='messenger-main-user-info'>
-                    <span>Пользователь:</span>
-                    &nbsp;
-                    <span className={
-                        'messenger-main-user-info-name'.concat(
-                            userData.type === '1' ? ' messenger-main-user-master' : '')
-                    }>{userData.username}</span>
-                </span>
+<span className='messenger-main-user-info'>
+    <span>Пользователь:</span>
+    &nbsp;
+    <span className={
+        'messenger-main-user-info-name'.concat(
+            userData.type === '1' ? ' messenger-main-user-master' : '')
+    }>{userData.username}</span>
+</span>
                 <Button className='messenger-main-user-exit'
                         caption='Выйти'
                         onClick={exit}/>
@@ -159,8 +172,11 @@ export default function Main({onExit}) {
                        onChange={setMessageInput}
                        onSubmit={sendMessage}/>
                 <Button className='messenger-main-input-button'
-                        caption='Отправить'
-                        onClick={sendMessage}/>
+                        title='Отправить'
+                        style={getSendButtonStyle()}
+                        onClick={sendMessage}>
+                    <UilMessage/>
+                </Button>
             </div>
         </div>
     );

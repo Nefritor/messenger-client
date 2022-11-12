@@ -11,9 +11,12 @@
     padding: 10px 15px;
     box-shadow: 0 0 10px #0000004a;
     z-index: 1;
+    align-items: center;
+    color: #fff;
 
     &-info {
       font-size: 18px;
+      user-select: none;
 
       &-name {
         font-weight: bold;
@@ -26,7 +29,7 @@
     }
 
     &-master {
-      background-image: linear-gradient(to right, #e91e63 0%, #9c27b0 17%, #673ab7 33%, #3f51b5 50%, #673ab7 67%, #9c27b0 83%, #e91e63 100%);
+      background-image: linear-gradient(to right, #ec407a 0%, #ba68c8 17%, #9575cd 33%, #7986cb 50%, #9575cd 67%, #ba68c8 83%, #ec407a 100%);
       background-size: 500% auto;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -49,7 +52,7 @@
     &-messageBlock {
       position: relative;
       display: inline-flex;
-      background-color: #dedede;
+      background-color: #565656;
       padding: 5px 40px 15px 15px;
       border-radius: 5px;
       align-items: baseline;
@@ -71,10 +74,13 @@
         line-height: 14px;
         text-align: right;
         flex-shrink: 0;
+        color: #cdcdcd;
+        user-select: none;
       }
 
       &-text {
         max-width: 400px;
+        color: #fff;
       }
 
       &-date {
@@ -82,6 +88,8 @@
         font-size: 11px;
         bottom: 2px;
         right: 5px;
+        color: #cdcdcd;
+        user-select: none;
       }
     }
 
@@ -90,20 +98,22 @@
       justify-content: center;
       position: relative;
       align-items: center;
+      user-select: none;
 
       &-text {
         font-size: 12px;
+        color: #fff;
       }
 
       &-divider {
         margin: 0 5px;
         height: 12px;
-        border-left: 1px solid #787878;
+        border-left: 1px solid #a0a0a0;
       }
 
       &-date {
         font-size: 12px;
-        color: #565656;
+        color: #a0a0a0;
       }
     }
   }
@@ -127,8 +137,10 @@
 
     &-button {
       margin: 10px;
-      box-shadow: 0 0 10px #0000004a;
-      border-radius: 23px;
+      box-shadow: 0 0 10px rgb(0 0 0 / 29%);
+      border-radius: 25px;
+      height: 50px;
+      transition: margin-right .3s ease;
     }
   }
 }

@@ -1,5 +1,12 @@
 .messenger-auth {
+  position: relative;
+  display: flex;
+  flex-direction: column;
   align-self: center;
+  gap: 20px;
+  width: 400px;
+  height: 260px;
+  justify-content: flex-end;
 
   &-header {
     text-align: center;
@@ -8,7 +15,6 @@
     text-transform: uppercase;
     color: #fff;
     text-shadow: 0 0 5px #00000059;
-    padding: 100px 0;
   }
 
   &-body {
@@ -22,18 +28,19 @@
       display: flex;
       flex-direction: column;
       gap: 20px;
-      margin-bottom: 20px;
     }
   }
 
   &-message {
     &-error,
     &-info {
+      bottom: -90px;
       width: 400px;
       margin: 20px auto;
       padding: 10px 20px;
       box-sizing: border-box;
       border-radius: 11px;
+      position: absolute;
     }
 
     &-error {
