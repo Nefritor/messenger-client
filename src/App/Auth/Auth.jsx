@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {Cookies} from 'react-cookie';
 
 import Input from '../../Components/Input/Input';
@@ -166,6 +166,13 @@ export default function Auth({onConnect, onError}) {
         key: 'signin',
         content: getSignUpRender()
     }];
+
+    useEffect(() => {
+        if (authState === null) {
+            setUsername('');
+            setPassword('');
+        }
+    }, [authState])
 
     return (
         <div className='messenger-auth'>
