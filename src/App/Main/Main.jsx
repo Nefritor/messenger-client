@@ -157,8 +157,6 @@ export default function Main({onExit}) {
             <div className='messenger-main-user'>
                 <div className='messenger-main-user-block'>
                     <div className='messenger-main-user-block-info'>
-                        <span>Пользователь:</span>
-                        &nbsp;
                         <span className={
                             'messenger-main-user-block-info-name'.concat(
                                 userData.type === '1' ? ' messenger-main-user-master' : '')
