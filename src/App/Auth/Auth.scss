@@ -39,8 +39,25 @@
 @media (max-width: 500px) {
   .messenger-auth {
     height: 250px;
+
     &-header {
       font-size: 24px;
     }
+  }
+}
+
+.messenger-author {
+  position: fixed;
+  bottom: 15px;
+  align-self: center;
+  color: #a0a0a0;
+  letter-spacing: 3px;
+  margin-right: -3px;
+  text-transform: uppercase;
+  font-size: 12px;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
   }
 }

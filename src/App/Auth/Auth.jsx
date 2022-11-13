@@ -39,6 +39,10 @@ const getErrorByType = (type) => {
     return {type: 'error', message};
 }
 
+const onAuthorClick = () => {
+    window.open('https://vk.com/nefritor', '_blank').focus()
+}
+
 Auth.defaultProps = {
     onConnect: () => console.error('Auth component doesn\'t has "onConnect" callback')
 }
@@ -175,14 +179,20 @@ export default function Auth({onConnect, onError}) {
     }, [authState])
 
     return (
-        <div className='messenger-auth'>
-            <div className='messenger-auth-header'>{getHeaderCaption(authState)}</div>
-            <SwitchContent value={authState} offset={95} configs={getContentConfig()}>
-                <div className='messenger-auth-body'>
-                    {getButtons(authState)}
-                </div>
-            </SwitchContent>
-        </div>
+        <>
+            <div className='messenger-auth'>
+                <div className='messenger-auth-header'>{getHeaderCaption(authState)}</div>
+                <SwitchContent value={authState} offset={95} configs={getContentConfig()}>
+                    <div className='messenger-auth-body'>
+                        {getButtons(authState)}
+                    </div>
+                </SwitchContent>
+            </div>
+            <div className='messenger-author'
+                 onClick={onAuthorClick}>
+                powered by nefritor
+            </div>
+        </>
     )
 }
 
