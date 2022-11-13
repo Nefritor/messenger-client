@@ -8,4 +8,8 @@
     bottom: 0;
     transition: opacity .3s ease, transform .3s ease;
   }
+
+  &-bottom {
+    z-index: 0;
+  }
 }

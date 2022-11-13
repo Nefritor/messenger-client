@@ -9,8 +9,7 @@ SwitchContent.defaultProps = {
 
 let timeoutId;
 
-
-export default function SwitchContent({configs, offset, value}) {
+export default function SwitchContent({configs, offset, value, children}) {
     const [contentData, setContentData] = useState({
         show: value,
         hide: null
@@ -19,9 +18,10 @@ export default function SwitchContent({configs, offset, value}) {
     const overflow = useRef(value === null ? 'visible' : 'hidden');
 
     useEffect(() => {
-        if (overflow.current === 'visible') {
+        overflow.current = 'visible';
+        setTimeout(() => {
             overflow.current = 'hidden';
-        }
+        }, 0)
         setContentData({
             hide: contentData.show,
             show: value
@@ -34,7 +34,7 @@ export default function SwitchContent({configs, offset, value}) {
                 hide: null,
                 show: value
             })
-        }, 500);
+        }, 300);
     }, [value]);
 
 
@@ -53,25 +53,28 @@ export default function SwitchContent({configs, offset, value}) {
             default:
                 return {
                     opacity: 0,
+                    zIndex: -1,
                     transform: `translateY(${offset}px)`
                 };
         }
     }
 
     return (
-        <div style={{
-            flexGrow: value === null ? 0 : 1,
-            overflow: overflow.current
-        }} className='messenger-switch-content'>
-            {
-                configs.map((data) => (
-                    <div key={data.key}
-                         style={getBlockStyle(data.key)}
-                         className='messenger-switch-content-block'>
-                        {data.content}
-                    </div>
-                ))
-            }
-        </div>
+        <>
+            <div style={{
+                flexGrow: value === null ? 0 : 1
+            }} className='messenger-switch-content'>
+                {
+                    configs.map((data) => (
+                        <div key={data.key}
+                             style={getBlockStyle(data.key)}
+                             className='messenger-switch-content-block'>
+                            {data.content}
+                        </div>
+                    ))
+                }
+            </div>
+            <div className='messenger-switch-content-bottom'>{children}</div>
+        </>
     )
 }
