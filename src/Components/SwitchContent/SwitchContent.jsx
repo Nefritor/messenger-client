@@ -15,13 +15,7 @@ export default function SwitchContent({configs, offset, value, children}) {
         hide: null
     });
 
-    const overflow = useRef(value === null ? 'visible' : 'hidden');
-
     useEffect(() => {
-        overflow.current = 'visible';
-        setTimeout(() => {
-            overflow.current = 'hidden';
-        }, 0)
         setContentData({
             hide: contentData.show,
             show: value
@@ -61,9 +55,8 @@ export default function SwitchContent({configs, offset, value, children}) {
 
     return (
         <>
-            <div style={{
-                flexGrow: value === null ? 0 : 1
-            }} className='messenger-switch-content'>
+            <div style={{flexGrow: value === null ? 0 : 1}}
+                 className='messenger-switch-content'>
                 {
                     configs.map((data) => (
                         <div key={data.key}
