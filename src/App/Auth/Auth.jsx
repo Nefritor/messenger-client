@@ -105,7 +105,7 @@ export default function Auth({onConnect}) {
                   onPasswordChanged={setPassword}
                   isValidUsername={isValidUsername}
                   isValidPassword={isValidPassword}
-                  onSubmit={onConnect}
+                  onSubmit={buttonClick}
                   onResetType={() => setAuthState(null)}/>
     );
 
@@ -117,7 +117,7 @@ export default function Auth({onConnect}) {
                   onPasswordChanged={setPassword}
                   isValidUsername={isValidUsername}
                   isValidPassword={isValidPassword}
-                  onSubmit={onConnect}
+                  onSubmit={buttonClick}
                   onResetType={() => setAuthState(null)}/>
     );
 
