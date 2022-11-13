@@ -12,6 +12,9 @@ import {useUserData} from '../../Context/User';
 import {UilMessage} from '@iconscout/react-unicons'
 
 import './Main.css';
+import {getUsersList} from '../../Utils/UserData';
+import Dropdown from '../../Components/Dropdown/Dropdown';
+import {formatDateTime} from '../../Utils/Date';
 
 const startWebSocket = ({wsRef, endpoint, onMessage, onClose}) => {
     wsRef.current.webSocket = new WebSocket(`ws://${endpoint}/${new Cookies().get('uuid')}`);
@@ -69,6 +72,7 @@ export default function Main({onExit}) {
     const userData = useUserData();
 
     const [messageList, setMessageList] = useState([]);
+    const [usersList, setUsersList] = useState([]);
     const [messageInput, setMessageInput] = useState('');
 
     const wsRef = useRef({
@@ -122,9 +126,18 @@ export default function Main({onExit}) {
                     switch (message.type) {
                         case 'connection':
                             setMessageList(message.messages);
+                            getUsersList({
+                                endpoint,
+                                onSuccess: (data) => {
+                                    setUsersList(data);
+                                }
+                            })
                             break;
                         case 'message':
                             setMessageList(prev => [...prev, ...message.data]);
+                            break;
+                        case 'online':
+                            setUsersList([...message.data]);
                             break;
                     }
                 },
@@ -142,14 +155,46 @@ export default function Main({onExit}) {
     return (
         <div className='messenger-main'>
             <div className='messenger-main-user'>
-<span className='messenger-main-user-info'>
-    <span>Пользователь:</span>
-    &nbsp;
-    <span className={
-        'messenger-main-user-info-name'.concat(
-            userData.type === '1' ? ' messenger-main-user-master' : '')
-    }>{userData.username}</span>
-</span>
+                <div className='messenger-main-user-block'>
+                    <div className='messenger-main-user-block-info'>
+                        <span>Пользователь:</span>
+                        &nbsp;
+                        <span className={
+                            'messenger-main-user-block-info-name'.concat(
+                                userData.type === '1' ? ' messenger-main-user-master' : '')
+                        }>{userData.username}</span>
+                    </div>
+                    <div className='messenger-main-user-block-online'>
+                        <Dropdown caption='Онлайн:'
+                                  rightCaption={usersList.filter((data) => data.online).length || '-'}
+                                  items={usersList}
+                                  ItemContent={
+                                      ({username, online, lastOnline, type}) =>
+                                          <>
+                                              <div className='messenger-main-user-block-online-item'>
+                                                  <div
+                                                      className={`messenger-main-user-block-online-item-${online ? 'on' : 'off'}`}/>
+                                                  <div className='messenger-main-user-block-online-item-name'>
+                                                      <div className={
+                                                          'messenger-main-user-block-online-item-name-bold'.concat(
+                                                              type === '1' ? ' messenger-main-user-master' : ''
+                                                          )
+                                                      }>{username}</div>
+                                                      {
+                                                          !online &&
+                                                          <div className='messenger-main-user-block-online-item-last'>
+                                                              <span>был в сети:</span>
+                                                              &nbsp;
+                                                              <span>{formatDateTime(lastOnline)}</span>
+                                                          </div>
+                                                      }
+                                                  </div>
+                                              </div>
+                                          </>
+                                  }/>
+                    </div>
+
+                </div>
                 <Button className='messenger-main-user-exit'
                         caption='Выйти'
                         onClick={exit}/>
