@@ -188,14 +188,20 @@ export default function Auth({onConnect}) {
             </SwitchContent>
             {
                 messageConfig.type &&
-                <div className={`messenger-auth-message-${messageConfig.type}`}>{messageConfig.text}</div>
+                <div className={`messenger-auth-message-${messageConfig.type}`}>
+                    <div className='messenger-auth-message-block'>
+                        {messageConfig.text}
+                    </div>
+                </div>
             }
         </div>
     )
 }
 
-export function AuthForm({username, password, isValidUsername,
-                             isValidPassword, onUserNameChanged, onPasswordChanged, onSubmit}) {
+export function AuthForm({
+                             username, password, isValidUsername,
+                             isValidPassword, onUserNameChanged, onPasswordChanged, onSubmit
+                         }) {
     const onRefInit = (inputRef) => {
         inputRef.current.focus();
     }
