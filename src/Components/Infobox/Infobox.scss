@@ -1,0 +1,29 @@
+.messenger-infobox {
+  &-error,
+  &-info {
+    position: absolute;
+    align-self: center;
+    bottom: 50px;
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 10px 20px;
+    box-sizing: border-box;
+    border-radius: 11px;
+    user-select: none;
+  }
+
+  &-error {
+    background-color: #c55a5a;
+  }
+
+  &-info {
+    background-color: #868686;
+  }
+
+  &-block {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
