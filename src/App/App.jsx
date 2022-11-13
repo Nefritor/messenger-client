@@ -62,12 +62,10 @@ export default function App() {
             {
                 userData.uuid ?
                     <Main onExit={onExit}/> :
-                    <>
-                        <Auth onConnect={onConnect}
+                    <Auth onConnect={onConnect}
                               onError={showError}/>
-                        <Infobox value={errorText} type={errorType} onValueChanged={setErrorText}/>
-                    </>
             }
+            <Infobox value={errorText} type={errorType} onValueChanged={setErrorText}/>
         </div>
     )
 }
