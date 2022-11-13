@@ -1,20 +1,27 @@
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import './SwitchContent.css';
 
 SwitchContent.defaultProps = {
     configs: [],
-    value: null
+    value: null,
+    offset: 300
 }
 
 let timeoutId;
 
-export default function SwitchContent({configs, height, value}) {
+
+export default function SwitchContent({configs, offset, value}) {
     const [contentData, setContentData] = useState({
-        show: null,
+        show: value,
         hide: null
     });
 
+    const overflow = useRef(value === null ? 'visible' : 'hidden');
+
     useEffect(() => {
+        if (overflow.current === 'visible') {
+            overflow.current = 'hidden';
+        }
         setContentData({
             hide: contentData.show,
             show: value
@@ -36,28 +43,26 @@ export default function SwitchContent({configs, height, value}) {
             case contentData.show:
                 return {
                     opacity: 1,
-                    marginBottom: 0
+                    transform: `translateY(${0}px)`
                 };
             case contentData.hide:
                 return {
                     opacity: 0,
-                    marginBottom: -height
+                    transform: `translateY(${offset}px)`
                 };
             default:
                 return {
                     opacity: 0,
-                    marginBottom: -height
+                    transform: `translateY(${offset}px)`
                 };
         }
     }
 
-    const getContentStyle = () => ({
-        height: value === null ? 0 : height
-    })
-
     return (
-        <div style={getContentStyle()}
-            className='messenger-switch-content'>
+        <div style={{
+            flexGrow: value === null ? 0 : 1,
+            overflow: overflow.current
+        }} className='messenger-switch-content'>
             {
                 configs.map((data) => (
                     <div key={data.key}

@@ -1,15 +1,11 @@
 .messenger-switch-content {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  overflow: hidden;
-  transition: height .3s ease;
+  transition: flex-grow .3s ease;
 
   &-block {
-    top: 0;
     position: absolute;
     width: 100%;
-    transition: opacity .3s ease, margin-bottom .3s ease;
+    bottom: 0;
+    transition: opacity .3s ease, transform .3s ease;
   }
 }
