@@ -181,10 +181,11 @@ export default function Auth({onConnect}) {
     return (
         <div className='messenger-auth'>
             <div className='messenger-auth-header'>{getHeaderCaption(authState)}</div>
-            <SwitchContent value={authState} offset={95} configs={getContentConfig()}/>
-            <div className='messenger-auth-body'>
-                {getButtons(authState)}
-            </div>
+            <SwitchContent value={authState} offset={95} configs={getContentConfig()}>
+                <div className='messenger-auth-body'>
+                    {getButtons(authState)}
+                </div>
+            </SwitchContent>
             {
                 messageConfig.type &&
                 <div className={`messenger-auth-message-${messageConfig.type}`}>{messageConfig.text}</div>
