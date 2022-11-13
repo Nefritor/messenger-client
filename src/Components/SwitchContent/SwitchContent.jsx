@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from 'react';
+import {useEffect, useState} from 'react';
 import './SwitchContent.css';
 
 SwitchContent.defaultProps = {
@@ -67,7 +67,10 @@ export default function SwitchContent({configs, offset, value, children}) {
                     ))
                 }
             </div>
-            <div className='messenger-switch-content-bottom'>{children}</div>
+            {
+                children &&
+                <div className='messenger-switch-content-bottom'>{children}</div>
+            }
         </>
     )
 }

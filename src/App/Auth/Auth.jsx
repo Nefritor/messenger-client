@@ -43,11 +43,10 @@ Auth.defaultProps = {
     onConnect: () => console.error('Auth component doesn\'t has "onConnect" callback')
 }
 
-export default function Auth({onConnect}) {
+export default function Auth({onConnect, onError}) {
     const endpoint = useEndpoint();
 
     const [authState, setAuthState] = useState(null);
-    const [messageConfig, setMessageConfig] = useState({});
 
     const [username, setUsername] = useState('');
     const [isValidUsername, setIsValidUsername] = useState(true);
@@ -61,7 +60,7 @@ export default function Auth({onConnect}) {
             setTimeout(() => {
                 setIsValidUsername(true);
             }, 3000);
-            onError({type: 'error', message: 'Укажите имя пользователя'});
+            processError({type: 'error', message: 'Укажите имя пользователя'});
             errorType += 1;
         } else if (!isValidUsername) {
             setIsValidUsername(true);
@@ -71,30 +70,20 @@ export default function Auth({onConnect}) {
             setTimeout(() => {
                 setIsValidPassword(true);
             }, 3000);
-            onError({type: 'error', message: 'Укажите пароль'});
+            processError({type: 'error', message: 'Укажите пароль'});
             errorType += 2;
         } else if (!isValidPassword) {
             setIsValidPassword(true);
         }
         if (!!errorType) {
-            onError(getErrorByType(errorType));
+            processError(getErrorByType(errorType));
             return false;
         }
         return true;
     };
 
-    const onError = (data) => {
-        notifyMessage(data.type, data.message);
-    };
-
-    const notifyMessage = (type, text) => {
-        setMessageConfig({
-            type,
-            text
-        })
-        setTimeout(() => {
-            setMessageConfig({});
-        }, 3000);
+    const processError = (data) => {
+        onError(data.message, data.type);
     };
 
     const getSignInRender = () => (
@@ -139,7 +128,7 @@ export default function Auth({onConnect}) {
                 type: authState,
                 data: getAuthData(authState, {username, password}),
                 onSuccess: onConnect,
-                onError
+                onError: processError
             });
         }
     }
@@ -186,14 +175,6 @@ export default function Auth({onConnect}) {
                     {getButtons(authState)}
                 </div>
             </SwitchContent>
-            {
-                messageConfig.type &&
-                <div className={`messenger-auth-message-${messageConfig.type}`}>
-                    <div className='messenger-auth-message-block'>
-                        {messageConfig.text}
-                    </div>
-                </div>
-            }
         </div>
     )
 }

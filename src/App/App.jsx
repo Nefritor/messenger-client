@@ -7,12 +7,14 @@ import {useUserData, useUserDataDispatch} from '../Context/User';
 import {updateUserData} from '../Utils/UserData';
 
 import './App.css';
+import Infobox from '../Components/Infobox/Infobox';
 
 export default function App() {
     const endpoint = useEndpoint();
     const userData = useUserData();
     const userDataDispatch = useUserDataDispatch();
     const [errorText, setErrorText] = useState('');
+    const [errorType, setErrorType] = useState('error');
     const [cookie, setCookie] = useCookies(['uuid']);
 
     const onSuccessLogin = (data) => {
@@ -31,11 +33,9 @@ export default function App() {
         });
     }
 
-    const showError = (reason) => {
+    const showError = (reason, type = 'error') => {
         setErrorText(reason);
-        setTimeout(() => {
-            setErrorText('');
-        }, 10000);
+        setErrorType(type);
     }
 
     const onExit = (reason) => {
@@ -63,15 +63,9 @@ export default function App() {
                 userData.uuid ?
                     <Main onExit={onExit}/> :
                     <>
-                        <Auth onConnect={onConnect}/>
-                        {
-                            errorText &&
-                            <div className='messenger-auth-message-error'>
-                                <div className='messenger-auth-message-block'>
-                                    {errorText}
-                                </div>
-                            </div>
-                        }
+                        <Auth onConnect={onConnect}
+                              onError={showError}/>
+                        <Infobox value={errorText} type={errorType} onValueChanged={setErrorText}/>
                     </>
             }
         </div>
