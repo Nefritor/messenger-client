@@ -34,13 +34,22 @@
   &-message {
     &-error,
     &-info {
-      bottom: -90px;
+      position: absolute;
+      align-self: center;
+      bottom: 50px;
       width: 400px;
       margin: 20px auto;
       padding: 10px 20px;
       box-sizing: border-box;
       border-radius: 11px;
-      position: absolute;
+      user-select: none;
+    }
+
+    &-block {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
     &-error {

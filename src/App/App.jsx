@@ -66,7 +66,11 @@ export default function App() {
                         <Auth onConnect={onConnect}/>
                         {
                             errorText &&
-                            <div className='messenger-auth-message-error'>{errorText}</div>
+                            <div className='messenger-auth-message-error'>
+                                <div className='messenger-auth-message-block'>
+                                    {errorText}
+                                </div>
+                            </div>
                         }
                     </>
             }
